@@ -1,0 +1,17 @@
+{
+  "name": "indonesia-job-radar",
+  "private": true,
+  "description": "Portal satu halaman: peta 3D lowongan kerja di seluruh Indonesia",
+  "scripts": {
+    "serve": "python3 -m http.server 8080",
+    "build:land": "node tools/build_land.mjs",
+    "smoke": "node tools/smoke.cjs"
+  },
+  "devDependencies": {
+    "maplibre-gl": "5.24.1",
+    "playwright": "^1.50.0",
+    "three": "0.187.0",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
+  }
+}

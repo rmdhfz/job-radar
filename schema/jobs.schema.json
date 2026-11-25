@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "jobs.schema.json",
+  "title": "jobs.json: kontrak data antara pipeline dan portal",
+  "type": "object",
+  "required": ["generated_at", "jobs"],
+  "properties": {
+    "generated_at": { "type": "string", "format": "date-time", "description": "Waktu pipeline menghasilkan berkas ini (UTC)." },
+    "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } }
+  },
+  "$defs": {
+    "job": {
+      "type": "object",
+      "required": ["id", "title", "company", "posted_at"],
+      "properties": {
+        "id": { "type": "string", "description": "Stabil antar-run (mis. hash dari company+url). Duplikat id dibuang oleh portal." },
+        "title": { "type": "string" },
+        "company": { "type": "string" },
+        "industry": { "type": "string", "description": "Dari taksonomi tetap di PRD.md." },
+        "city": { "type": "string", "description": "Harus ada di gazetteer index.html, atau isi lat/lng, atau 'Remote'." },
+        "province": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "level": { "type": "string" },
+        "work_type": { "enum": ["onsite", "hybrid", "remote"], "default": "onsite" },
+        "salary_min": { "type": ["number", "null"], "description": "Rupiah per bulan. null jika tidak tercantum. Jangan menebak." },
+        "salary_max": { "type": ["number", "null"] },
+        "posted_at": { "type": "string", "format": "date-time", "description": "Waktu posting di sumber. Jika sumber tidak menyebut, pakai waktu pertama kali terlihat dan tandai di source_label." },
+        "last_verified_at": { "type": "string", "format": "date-time", "description": "Terakhir tautan lamar dicek masih hidup." },
+        "status": { "enum": ["active", "unverified", "expired"], "default": "unverified" },
+        "trust": { "type": "integer", "minimum": 0, "maximum": 100, "description": "Skor kepercayaan, rubrik di PRD.md bagian 7." },
+        "source_label": { "type": "string", "description": "Teks yang ditampilkan, mis. 'Situs perusahaan', 'Channel Telegram'." },
+        "url": { "type": "string", "pattern": "^https?://", "description": "Tautan lamar resmi. Selain http(s) akan ditolak portal." }
+      }
+    }
+  }
+}
