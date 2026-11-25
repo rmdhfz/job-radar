@@ -49,8 +49,11 @@ python -I tools/build_gazetteer.py cities15000.zip admin1CodesASCII.txt   # only
 ```
 
 Deploy uploads only `dist/`, which `tools/build_site.mjs` fills from an allowlist (`index.html`, `robots.txt`, `_headers`,
-`jobs.json` if present). Anything in `dist/` is public. Security headers and `noindex` live in `_headers`; the page CSP is
-in `index.html` and also allows Cloudflare Web Analytics, which the `buitenzorg.dev` zone injects.
+`favicon.svg`, `og-image.png`, `jobs.json` if present). It also pre-renders the 40 newest jobs into `dist/index.html`
+(replaced by the app on load), puts live counts in the meta description and writes `sitemap.xml`. Anything in `dist/` is
+public and the site is indexable (owner's decision, 25 Nov 2026). Security headers live in `_headers`; the page CSP is in
+`index.html` and also allows Cloudflare Web Analytics, which the `buitenzorg.dev` zone injects.
+`node tools/og_image.cjs` regenerates the 1200x630 social preview from the real page and the current `jobs.json`.
 
 Opening `index.html` via `file://` works too (falls back to demo data; use the "Muat jobs.json" button).
 
@@ -75,7 +78,10 @@ Opening `index.html` via `file://` works too (falls back to demo data; use the "
   `three.core.js` to `three.core.min.js` must keep the same version). Keep `three` in `package.json` at the same version:
   the smoke test serves it from `node_modules`.
 - The 3D map is a `<script type="module">` that attaches itself via `JobRadar.attachMap()`. The list and filters must keep
-  working without it (CDN down, no WebGL). It renders on demand only; do not add an always-running loop.
+  working without it (CDN down, no WebGL). It renders on demand only; do not add an always-running loop (the pulse rings
+  are the one throttled exception, about 25 fps, off under reduced motion). Bars use a small `onBeforeCompile` gradient on
+  `MeshStandardMaterial`; shadows come from one directional light; ground glow and the selected-city beam are additive.
+- "Bidang" (job function) is derived in the portal from the title (`ROLES`); "Industri" is the employer's industry.
 - Company profiles: `companies` in `jobs.json` first, Wikipedia/Wikidata only after the user clicks. Never send anything to a
   third party without a click, and keep the attribution. The CSP in `<head>` lists every allowed origin; update it on purpose.
 - Indonesian for all user-facing text, English for code. Money is rupiah per month, shown as "Rp 12–18 jt".

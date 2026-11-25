@@ -19,7 +19,7 @@ untuk saya, di mana, dan bergaji berapa?"*
 
 ## 3. Bukan tujuan
 
-- Bukan mesin pencari lowongan publik, tidak ada akun pengguna lain, tidak ada iklan.
+- Tidak ada akun pengguna, tidak ada iklan. (Sejak 25 Nov 2026 situs dipublikasikan dan boleh diindeks mesin pencari atas keputusan pemilik; penanda simpan/dilamar tetap hanya di browser masing-masing.)
 - Tidak menyalin isi deskripsi lowongan secara penuh. Portal menyimpan metadata minimal dan menautkan ke sumber.
 - Tidak memakai pengambilan data otomatis pada situs yang melarangnya (bagian 5).
 - Tidak menjanjikan "semua lowongan Indonesia". Cakupan nyata adalah **sumber yang dipantau**, dan portal menampilkan cakupan itu secara jujur.
@@ -86,6 +86,8 @@ Tidak ada yang dikirim ke Wikipedia sebelum tombol ditekan. Data contoh memakai 
     "status": "active", "trust": 88, "source_label": "Situs perusahaan", "url": "https://contoh.example/karier/123" }] }
 ```
 
+**Bidang** (fungsi pekerjaan) tidak ada di `jobs.json`: portal menurunkannya dari judul lowongan dengan aturan kata kunci tetap (`ROLES` di `index.html`): IT & Software, Data & AI, Produk & Desain, Keuangan & Akuntansi, Sales & Bisnis, SDM & Legal, Operasional, Lainnya. Tidak cocok = Lainnya. **Industri** tetap industri perusahaan pemberi kerja.
+
 Taksonomi industri tetap (ubah hanya lewat PRD): Teknologi Informasi, Perbankan & Keuangan, Pertambangan, Energi,
 Manufaktur & FMCG, Retail & E-commerce, Logistik & Pelayaran, Telekomunikasi, Kesehatan, Pendidikan, Pemerintahan & BUMN, Lainnya.
 
@@ -145,12 +147,14 @@ Portal tidak boleh menyebut lowongan "terverifikasi" tanpa bukti. Definisi:
 | F-11 | Pencarian tersimpan dan notifikasi lowongan baru yang cocok (Telegram ke diri sendiri) | 4 | Belum |
 | F-12 | Panel cakupan: berapa sumber dan perusahaan dipantau, kapan terakhir berhasil | 3 | Data sudah ada (`sources` di `jobs.json`), tampilan belum |
 | F-13 | Hosting statis dengan kontrol akses | 5 | Opsional |
+| F-16 | Filter dan chip "Bidang" (mis. IT & Software) dari judul posisi | 0 | Selesai |
+| F-17 | SEO: meta + Open Graph, JSON-LD WebSite/SearchAction (`?q=`), `?kota=`/`?bidang=`, sitemap, pra-render lowongan terbaru di `dist/index.html`, bagian "Tentang" | 0 | Selesai |
 | F-14 | Dialog detail lowongan: info, skor kepercayaan dan rubriknya, lowongan lain di perusahaan/kota yang sama, tautan dalam (`#job=`) | 0 | Selesai |
 | F-15 | Profil perusahaan: statistik di radar, `companies` dari `jobs.json`, Wikipedia/Wikidata atas permintaan | 0 | Selesai |
 
 ## 10. Persyaratan non-fungsional
 
-- **Ringan:** `index.html` di bawah 250 KB (saat ini sekitar 165 KB), tanpa framework dan tanpa langkah build. three.js dari CDN sekitar 170 KB terkompresi. Peta hanya merender saat ada perubahan. Tampilan awal di bawah 2 detik pada jaringan 4G.
+- **Ringan:** `index.html` di bawah 250 KB (saat ini sekitar 200 KB; `dist/index.html` dengan pra-render sekitar 215 KB), tanpa framework dan tanpa langkah build. three.js dari CDN sekitar 170 KB terkompresi. Peta hanya merender saat ada perubahan. Tampilan awal di bawah 2 detik pada jaringan 4G.
 - **Berfungsi tanpa internet** untuk daftar, filter, dan data yang sudah dimuat. Peta 3D butuh three.js dari CDN (bisa disalin lokal).
 - **Aman:** semua teks dari `jobs.json` dan Wikipedia di-escape, hanya tautan `http(s)`, `rel="noopener noreferrer"`, Content-Security-Policy membatasi skrip ke CDN jsDelivr dan koneksi ke Wikipedia/Wikidata, `referrer` tidak dikirim.
 - **Responsif** sampai lebar 360 px. **Aksesibel:** dapat dioperasikan dengan keyboard, kontras memadai, mengikuti tema gelap/terang.
