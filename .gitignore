@@ -5,3 +5,6 @@ pipeline/*.sqlite
 tools/.bad.json
 .wrangler/
 dist/
+.venv/
+__pycache__/
+.pytest_cache/

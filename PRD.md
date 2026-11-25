@@ -41,13 +41,14 @@ Sumber dikelompokkan menurut **risiko hukum dan ToS**. Aturan: **tier C tidak bo
 | Tier | Sumber | Cara masuk | Catatan |
 |---|---|---|---|
 | **A, aman** | Halaman karier perusahaan | `JobPosting` JSON-LD di halaman, hormati `robots.txt` | Banyak situs memasangnya agar muncul di Google for Jobs |
-| **A** | ATS publik: Greenhouse, Lever, Ashby, SmartRecruiters | API job board publik tiap perusahaan | Butuh daftar perusahaan (`companies.yaml`). Cek endpoint di dokumentasi resmi sebelum dipakai |
+| **A** | ATS publik: Greenhouse, Lever, Workable (Ashby, SmartRecruiters: lihat catatan) | API job board publik tiap perusahaan | Butuh daftar perusahaan (`pipeline/companies.yaml`). Endpoint dicek di dokumentasi resmi (25 Nov 2026). **SmartRecruiters tidak dipakai**: `api.smartrecruiters.com/robots.txt` melarang semua bot kecuali LinkedInBot. Ashby ditunda: `robots.txt`-nya tidak bisa dibaca (401) |
+| **A** | Situs karier perusahaan yang di-host Workday (`*.myworkdayjobs.com`) | Sitemap yang dideklarasikan di `robots.txt`, lalu `JobPosting` JSON-LD di tiap halaman | Hanya jika `robots.txt` mengizinkan path situsnya (Citi dan DBS melarang, jadi dilewati) |
 | **A** | Channel Telegram yang Anda ikuti | API Telegram resmi (Telethon/TDLib, akun Anda sendiri) | Berkas sesi adalah rahasia, jangan di-commit |
 | **A** | Email alert dari Jobstreet, LinkedIn, Indeed, Glints | Baca kotak surat Anda sendiri lewat IMAP atau Gmail API (read-only) | Ambil judul, perusahaan, kota, tautan saja. Ini jalur legal ke isi platform tier C |
 | **A** | Input manual | Tombol "Tambah" atau tempel tautan | Untuk lowongan dari teman, grup WhatsApp, dsb. |
 | **B, hati-hati** | X dan Threads | API resmi masing-masing | Akses dan batasnya berubah. Cek dokumentasi terbaru, mungkin berbayar atau terbatas |
 | **B** | Portal pemerintah dan marketplace kecil | Hanya jika ada API atau data terbuka | Periksa ToS dan `robots.txt` per situs |
-| **C, jangan scrape** | LinkedIn, Indeed, Jobstreet, dan situs sejenis | Tidak ada | Gunakan email alert (tier A) dan **pintasan pencarian** di bawah |
+| **C, jangan scrape** | LinkedIn, Indeed, Jobstreet, Kalibrr, dan situs sejenis | Tidak ada | Gunakan email alert (tier A) dan **pintasan pencarian** di bawah |
 
 **Pintasan pencarian (F-9):** untuk platform tier C, portal hanya membuat tautan pencarian siap pakai
 (kata kunci + kota) yang dibuka di tab baru. Cakupan tetap penuh tanpa melanggar apa pun.
@@ -96,8 +97,8 @@ Portal tidak boleh menyebut lowongan "terverifikasi" tanpa bukti. Definisi:
 
 | Faktor | Poin |
 |---|---|
-| Sumber adalah domain resmi perusahaan atau ATS publik perusahaan | +40 |
-| Tautan lamar dicek hidup (HTTP 200, tanpa teks "ditutup/closed/expired") dalam 72 jam | +20 |
+| Sumber adalah domain resmi perusahaan, situs karier resminya, atau ATS publik perusahaan | +40 |
+| Tautan lamar dicek hidup (HTTP 200, tanpa teks "ditutup/closed/expired") dalam 72 jam. Untuk ATS: lowongan masih tercantum di API resmi "published postings" pada pengambilan terakhir. Untuk JSON-LD: masih ada di sitemap dan halamannya diambil ≤ 48 jam lalu dengan `JobPosting` yang belum lewat `validThrough` | +20 |
 | Cocok silang di 2 sumber independen atau lebih | +15 |
 | Data lengkap dan konsisten (lokasi, jabatan, perusahaan) | +10 |
 | Domain tautan lamar cocok dengan domain perusahaan | +15 |
@@ -137,12 +138,12 @@ Portal tidak boleh menyebut lowongan "terverifikasi" tanpa bukti. Definisi:
 | F-4 | Simpan dan tandai "sudah dilamar" (localStorage) | 0 | Selesai |
 | F-5 | Impor `jobs.json` dan pemuatan otomatis `jobs.json` di sebelahnya | 0 | Selesai |
 | F-6 | Peta dasar bawaan (offline, pulau diekstrusi dengan three.js) | 0 | Selesai (opsi peta detail online CARTO dihapus bersama MapLibre) |
-| F-7 | Ingestion tier A: ATS publik + JSON-LD + input manual, ekspor `jobs.json` | 1 | Belum |
+| F-7 | Ingestion tier A: ATS publik + JSON-LD + input manual, ekspor `jobs.json` | 1 | Sebagian: Greenhouse, Lever, Workable, JSON-LD (Workday) untuk 11 perusahaan; GitHub Actions tiap 3 jam. Input manual belum |
 | F-8 | Telegram dan email alert | 2 | Belum |
 | F-9 | Pintasan pencarian untuk platform tier C | 1 | Sebagian: di dialog detail (LinkedIn, Jobstreet, Indeed, Glints) |
 | F-10 | Validasi: cek tautan hidup, skor, deduplikasi, kedaluwarsa | 3 | Belum |
 | F-11 | Pencarian tersimpan dan notifikasi lowongan baru yang cocok (Telegram ke diri sendiri) | 4 | Belum |
-| F-12 | Panel cakupan: berapa sumber dan perusahaan dipantau, kapan terakhir berhasil | 3 | Belum |
+| F-12 | Panel cakupan: berapa sumber dan perusahaan dipantau, kapan terakhir berhasil | 3 | Data sudah ada (`sources` di `jobs.json`), tampilan belum |
 | F-13 | Hosting statis dengan kontrol akses | 5 | Opsional |
 | F-14 | Dialog detail lowongan: info, skor kepercayaan dan rubriknya, lowongan lain di perusahaan/kota yang sama, tautan dalam (`#job=`) | 0 | Selesai |
 | F-15 | Profil perusahaan: statistik di radar, `companies` dari `jobs.json`, Wikipedia/Wikidata atas permintaan | 0 | Selesai |
@@ -186,4 +187,5 @@ Portal tidak boleh menyebut lowongan "terverifikasi" tanpa bukti. Definisi:
 1. Daftar awal 30 perusahaan target (Tbk, tambang, FMCG, perbankan) dan kata kunci posisi.
 2. ~~Hosting~~ Terjawab 25 Nov 2026: Cloudflare Workers static assets di https://job-radar.buitenzorg.dev (`npm run deploy`), `noindex`. Masih terbuka: perlukah Cloudflare Access (F-13) sebelum `jobs.json` nyata ikut terunggah?
 3. Channel Telegram dan email alert mana yang dipakai di Fase 2?
-4. Perlukah penelusuran tambahan ke kota kecil di luar gazetteer 44 kota saat ini?
+4. ~~Kota kecil~~ Terjawab 25 Nov 2026: gazetteer diperluas dengan ±300 kota dari GeoNames cities15000 (CC BY 4.0, `tools/build_gazetteer.py`). Lowongan yang hanya menyebut provinsi tetap dilewati dan dihitung di `sources[].skipped`.
+5. Fase 1 meminta minimal 30 perusahaan; baru 11. Perusahaan Indonesia yang memakai Kalibrr/Jobstreet saja hanya bisa masuk lewat email alert (Fase 2).

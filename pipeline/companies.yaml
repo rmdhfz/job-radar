@@ -1,0 +1,77 @@
+# Target companies and their public ATS boards (Tier A, PRD section 5).
+# Each board below was checked on 2026-11-25: it answered on the documented public endpoint and had Indonesian postings,
+# and its API host's robots.txt allows our User-Agent.
+#   industry: one of the fixed taxonomy in PRD section 6
+#   website:  official site; used for the "apply link on company domain" trust rule and the company profile
+#   sources:  greenhouse {board} | lever {site} | workable {account}
+# Not usable today: SmartRecruiters boards (Grab, Bosch, Alodokter, BukuWarung, Stockbit, Sayurbox, Julo) because
+# api.smartrecruiters.com/robots.txt disallows all agents except LinkedInBot; Ashby (robots.txt unreadable).
+
+- name: Xendit
+  industry: Perbankan & Keuangan
+  website: https://www.xendit.co
+  sources:
+    - {type: greenhouse, board: xendit}
+
+- name: Ninja Van
+  industry: Logistik & Pelayaran
+  website: https://www.ninjavan.co
+  sources:
+    - {type: lever, site: ninjavan}
+
+- name: Lalamove
+  industry: Logistik & Pelayaran
+  website: https://www.lalamove.com
+  sources:
+    - {type: lever, site: lalamove}
+
+- name: Ajaib
+  industry: Perbankan & Keuangan
+  website: https://ajaib.co.id
+  sources:
+    - {type: workable, account: ajaib}
+
+- name: Amartha
+  industry: Perbankan & Keuangan
+  website: https://amartha.com
+  sources:
+    - {type: workable, account: amartha}
+
+- name: Nium
+  industry: Perbankan & Keuangan
+  website: https://www.nium.com
+  sources:
+    - {type: lever, site: nium}
+
+- name: OKX
+  industry: Perbankan & Keuangan
+  website: https://www.okx.com
+  sources:
+    - {type: greenhouse, board: okx}
+
+# ---- company career sites with JobPosting JSON-LD (Workday-hosted), discovered through the sitemap in robots.txt.
+# Checked 2026-11-25: robots.txt allows the site path. Citi and DBS were skipped because their robots.txt disallows it.
+
+- name: tiket.com
+  industry: Retail & E-commerce
+  website: https://www.tiket.com
+  sources:
+    - {type: jsonld, sitemap: "https://tiketdotcom.wd3.myworkdayjobs.com/Tiket_Careers/siteMap.xml"}
+
+- name: PwC Indonesia
+  industry: Lainnya
+  website: https://www.pwc.com/id
+  sources:
+    - {type: jsonld, sitemap: "https://pwc.wd3.myworkdayjobs.com/Global_Experienced_Careers/siteMap.xml"}
+
+- name: Manulife Indonesia
+  industry: Perbankan & Keuangan
+  website: https://www.manulife.co.id
+  sources:
+    - {type: jsonld, sitemap: "https://manulife.wd3.myworkdayjobs.com/MFCJH_Jobs/siteMap.xml"}
+
+- name: Unilever Indonesia
+  industry: Manufaktur & FMCG
+  website: https://www.unilever.co.id
+  sources:
+    - {type: jsonld, sitemap: "https://unilever.wd3.myworkdayjobs.com/Unilever_Experienced_Professionals/siteMap.xml"}

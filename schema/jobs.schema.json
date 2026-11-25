@@ -7,6 +7,9 @@
   "properties": {
     "generated_at": { "type": "string", "format": "date-time", "description": "Waktu pipeline menghasilkan berkas ini (UTC)." },
     "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } },
+    "sources": { "type": "array", "description": "Opsional. Laporan cakupan per board/sumber dari run terakhir (PRD F-12).", "items": { "type": "object", "required": ["feed", "ok"], "properties": {
+      "feed": { "type": "string" }, "company": { "type": "string" }, "ok": { "type": "boolean" }, "fetched": { "type": "integer" }, "kept": { "type": "integer" },
+      "skipped": { "type": "object", "additionalProperties": { "type": "integer" } }, "error": { "type": "string" }, "fetched_at": { "type": "string", "format": "date-time" } } } },
     "companies": { "type": "object", "additionalProperties": { "$ref": "#/$defs/company" }, "description": "Opsional. Profil perusahaan; kuncinya sama persis dengan nilai 'company' di jobs. Hanya data perusahaan, bukan data pribadi." }
   },
   "$defs": {

@@ -10,8 +10,8 @@ A personal job-radar portal for Indonesia: one static `index.html` that shows jo
 islands, instanced bars per city) with filters for industry, company, salary, posting time, location and validity. Data comes from a
 `jobs.json` file (contract: `schema/jobs.schema.json`). Without it, the page shows clearly labelled **demo data**.
 
-Status: Phase 0 (UI) done, including the three.js map, job detail dialog and company profiles. Phase 1+ (ingestion pipeline)
-not started. See PRD section 9.
+Status: Phase 0 (UI) done. Phase 1 partly done: `pipeline/` fetches Greenhouse, Lever, Workable and Workday JSON-LD for the
+companies in `pipeline/companies.yaml`; GitHub Actions refreshes `jobs.json` every 3 hours. See PRD section 9.
 
 ## Layout
 
@@ -24,7 +24,14 @@ tools/fixtures/         saved real Wikipedia/Wikidata responses used by the smok
 PRD.md                  requirements, source strategy, validity rules, phases
 ```
 
-Future (Phase 1+) goes in `pipeline/` (Python 3.12, SQLite): one module per source, same interface, exports `jobs.json`.
+`pipeline/` (Python 3.12, SQLite, PyYAML): one module per source in `pipeline/sources/`, same interface (see its
+`__init__.py`), `run.py` exports `jobs.json`. Every request goes through `pipeline/http.py`, which honours robots.txt and
+Crawl-delay and stops a board on HTTP 429. `.github/workflows/update-jobs.yml` runs tests + pipeline every 3 hours and
+commits `jobs.json` when it changed; that push deploys through Workers Builds.
+
+Adding a company: verify its board answers on the documented public endpoint, that robots.txt allows it, and that it
+has Indonesian postings; then add it to `companies.yaml` with an industry from the PRD taxonomy. Adding a source type:
+save a real response in `pipeline/tests/fixtures/` first (see its README), write the test, then the parser.
 
 ## Commands
 
@@ -34,6 +41,11 @@ npm run serve        # http://localhost:8080  (python http.server; jobs.json nex
 npm run smoke        # must print SMOKE OK before you call anything done
 npm run build:land   # only if the basemap needs regenerating
 npm run deploy       # Cloudflare Workers static assets -> https://job-radar.buitenzorg.dev (needs `wrangler login`)
+
+python -m venv .venv && .venv/Scripts/pip install -r requirements.txt -r requirements-dev.txt   # once (bin/ on Linux)
+.venv/Scripts/python -m pytest -q pipeline/tests    # parser tests against saved real samples, no network
+.venv/Scripts/python -u -m pipeline.run             # live fetch -> jobs.json (+ pipeline/jobs.sqlite)
+python -I tools/build_gazetteer.py cities15000.zip admin1CodesASCII.txt   # only to regenerate the GeoNames towns
 ```
 
 Deploy uploads only `dist/`, which `tools/build_site.mjs` fills from an allowlist (`index.html`, `robots.txt`, `_headers`,
@@ -94,4 +106,6 @@ never open-and-reformat it, and edit it only through `npm run build:land`.
   wrong article for ambiguous names; the UI says so.
 - The Jobstreet and Indeed search-shortcut URL formats could not be checked automatically (bot protection, HTTP 403).
 - Low-end phones: frame rate on a real device was not measured (only headless Chromium with SwiftShader).
-- No real data source exists yet; every number on the page is demo data until Phase 1.
+- The update workflow has run locally only until its first scheduled run on GitHub; check the Actions tab.
+- Workday sitemaps of large tenants are often capped (about 100 URLs), so their coverage is partial.
+- `index.html` contains the GeoNames towns between `/*GAZ:START*/` and `/*GAZ:END*/`; regenerate, never hand-edit.
