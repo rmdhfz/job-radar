@@ -48,6 +48,20 @@ async function wire(page, problems, wikiCalls) {
   assert(total > 50, 'demo data should load');
   assert(await page.evaluate(() => JobRadar.state.jobs.every((j) => j.company.startsWith('PT Demo'))), 'demo companies are fictional');
 
+  // the full filter panel starts closed so the list gets the space; quick chips work without it
+  assert(await page.evaluate(() => document.getElementById('filters').hidden), 'filter panel starts closed');
+  await page.click('[data-quick="since:24"]');
+  assert((await page.$$('.job:not(:has(.tag.fresh))')).length === 0, '24 jam chip keeps only fresh jobs');
+  assert.strictEqual(await page.getAttribute('[data-quick="since:24"]', 'aria-pressed'), 'true', 'chip shows pressed state');
+  assert.strictEqual(await page.textContent('#fcount'), '1', 'filter button counts active filters');
+  await page.click('[data-quick="since:24"]');
+  assert.strictEqual(await n(), total, 'pressing the chip again removes the filter');
+  await page.click('[data-quick="sal"]');
+  assert((await page.$$eval('.job .tag.sal', (e) => e.map((x) => x.textContent))).every((t) => !t.includes('tidak tercantum')), '"Ada gaji" chip hides unknown salaries');
+  await page.click('[data-quick="sal"]');
+  await page.click('#fbtn');
+  assert(await page.isVisible('#salMin'), 'Filter button opens the full panel');
+
   // suspect jobs (trust < 40) are hidden by default, PRD section 7
   await page.check('#susShow');
   assert((await n()) > total, 'showing suspect jobs adds rows');
@@ -67,6 +81,8 @@ async function wire(page, problems, wikiCalls) {
   await page.selectOption('#since', '24');
   assert((await page.$$('.job:not(:has(.tag.fresh))')).length === 0, '24h filter keeps only fresh jobs');
   await page.selectOption('#since', '0');
+  await page.click('#fbtn');
+  assert(!(await page.isVisible('#salMin')), 'Filter button closes the panel again');
 
   // map labels and the "Kota terpadat" ranking both select a city
   await page.click('.lbl >> nth=0');
