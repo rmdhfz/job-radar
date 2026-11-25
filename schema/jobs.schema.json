@@ -6,7 +6,8 @@
   "required": ["generated_at", "jobs"],
   "properties": {
     "generated_at": { "type": "string", "format": "date-time", "description": "Waktu pipeline menghasilkan berkas ini (UTC)." },
-    "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } }
+    "jobs": { "type": "array", "items": { "$ref": "#/$defs/job" } },
+    "companies": { "type": "object", "additionalProperties": { "$ref": "#/$defs/company" }, "description": "Opsional. Profil perusahaan; kuncinya sama persis dengan nilai 'company' di jobs. Hanya data perusahaan, bukan data pribadi." }
   },
   "$defs": {
     "job": {
@@ -30,7 +31,24 @@
         "status": { "enum": ["active", "unverified", "expired"], "default": "unverified" },
         "trust": { "type": "integer", "minimum": 0, "maximum": 100, "description": "Skor kepercayaan, rubrik di PRD.md bagian 7." },
         "source_label": { "type": "string", "description": "Teks yang ditampilkan, mis. 'Situs perusahaan', 'Channel Telegram'." },
-        "url": { "type": "string", "pattern": "^https?://", "description": "Tautan lamar resmi. Selain http(s) akan ditolak portal." }
+        "url": { "type": "string", "pattern": "^https?://", "description": "Tautan lamar resmi. Selain http(s) akan ditolak portal." },
+        "summary": { "type": "string", "maxLength": 600, "description": "Opsional. Ringkasan singkat dari sumber, bukan salinan penuh deskripsi. Portal memotong di 600 karakter." }
+      }
+    },
+    "company": {
+      "type": "object",
+      "properties": {
+        "website": { "type": "string", "pattern": "^https?://", "description": "Situs resmi. Selain http(s) dibuang portal." },
+        "industry": { "type": "string" },
+        "founded": { "type": ["string", "integer"], "description": "Tahun atau tanggal berdiri, mis. 1991." },
+        "headquarters": { "type": "string" },
+        "employees": { "type": ["string", "integer"], "description": "Mis. '1.000–5.000'." },
+        "ticker": { "type": "string", "description": "Kode saham, mis. 'TLKM'." },
+        "summary": { "type": "string", "maxLength": 1200 },
+        "history": { "type": "string", "maxLength": 2000, "description": "Sejarah singkat." },
+        "source_label": { "type": "string", "description": "Asal profil, mis. 'Wikipedia', 'Situs perusahaan'." },
+        "source_url": { "type": "string", "pattern": "^https?://" },
+        "updated_at": { "type": "string", "format": "date-time" }
       }
     }
   }

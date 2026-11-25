@@ -1,6 +1,6 @@
 # PRD: Radar Loker Indonesia
 
-Status: Fase 0 (prototipe antarmuka) selesai. Fase 1 dan seterusnya belum dibangun.
+Status: Fase 0 (prototipe antarmuka) selesai, peta 3D dipindah ke three.js, detail lowongan dan profil perusahaan ditambahkan. Fase 1 (ingestion) belum dibangun.
 Pemilik: Hafiz Ramadhan (pengguna tunggal). Terakhir diperbarui: 25 Nov 2026.
 
 ## 1. Masalah
@@ -64,7 +64,18 @@ Portal membuang baris tidak valid, id ganda, kota tidak dikenal, dan tautan sela
 
 Bidang wajib: `id`, `title`, `company`, `posted_at`. Bidang lain: `industry`, `city`, `province`, `lat`, `lng`,
 `level`, `work_type`, `salary_min`, `salary_max` (rupiah per bulan, `null` jika tidak tercantum, **jangan menebak**),
-`last_verified_at`, `status` (`active | unverified | expired`), `trust` (0 sampai 100), `source_label`, `url`.
+`last_verified_at`, `status` (`active | unverified | expired`), `trust` (0 sampai 100), `source_label`, `url`,
+`summary` (ringkasan singkat maks. 600 karakter, **bukan** salinan penuh deskripsi).
+
+Opsional di tingkat atas: `companies`, peta `nama perusahaan -> profil` dengan bidang `website`, `industry`, `founded`,
+`headquarters`, `employees`, `ticker`, `summary`, `history`, `source_label`, `source_url`, `updated_at`. Kuncinya harus sama
+persis dengan nilai `company` di lowongan. Hanya data perusahaan, tidak ada data pribadi.
+
+**Profil perusahaan di portal** diambil dengan urutan: (1) `companies` di `jobs.json`; (2) jika pengguna menekan
+"Cari profil di Wikipedia", portal memanggil API publik Wikipedia (id, lalu en) dan Wikidata langsung dari peramban.
+Hasil dicocokkan dengan nama perusahaan (judul generik seperti "Indonesia" tidak pernah cocok), diberi atribusi
+(Wikipedia CC BY-SA 4.0, Wikidata CC0) dan peringatan bahwa pencocokan otomatis, lalu di-cache di `localStorage` 30 hari.
+Tidak ada yang dikirim ke Wikipedia sebelum tombol ditekan. Data contoh memakai profil fiktif berlabel.
 
 ```json
 { "generated_at": "2026-11-25T03:00:00Z",
@@ -108,7 +119,7 @@ Portal tidak boleh menyebut lowongan "terverifikasi" tanpa bukti. Definisi:
  Telegram, IMAP)
 ```
 
-- **Portal** (`index.html`): satu berkas, tanpa build, MapLibre GL dari CDN, tanpa backend. Sudah ada.
+- **Portal** (`index.html`): satu berkas, tanpa build, three.js (modul ES lewat import map, versi dikunci) dari CDN, tanpa backend. Daftar dan filter tetap berfungsi bila three.js gagal dimuat. Sudah ada.
 - **Ingestion**: Python agar Telethon dan IMAP mudah. Satu modul per sumber, dengan antarmuka sama (`fetch() -> list[RawJob]`).
 - **Penyimpanan**: SQLite cukup untuk satu pengguna. Pindah ke PostgreSQL hanya jika perlu.
 - **Jadwal**: cron lokal atau GitHub Actions tiap 1 sampai 3 jam. Hasilnya `jobs.json` (dikompresi) di hosting statis.
@@ -125,20 +136,22 @@ Portal tidak boleh menyebut lowongan "terverifikasi" tanpa bukti. Definisi:
 | F-3 | Daftar: waktu posting, gaji atau "tidak tercantum", lencana validitas, sumber, tautan lamar | 0 | Selesai |
 | F-4 | Simpan dan tandai "sudah dilamar" (localStorage) | 0 | Selesai |
 | F-5 | Impor `jobs.json` dan pemuatan otomatis `jobs.json` di sebelahnya | 0 | Selesai |
-| F-6 | Peta dasar bawaan (offline) dan opsi peta detail online | 0 | Selesai |
+| F-6 | Peta dasar bawaan (offline, pulau diekstrusi dengan three.js) | 0 | Selesai (opsi peta detail online CARTO dihapus bersama MapLibre) |
 | F-7 | Ingestion tier A: ATS publik + JSON-LD + input manual, ekspor `jobs.json` | 1 | Belum |
 | F-8 | Telegram dan email alert | 2 | Belum |
-| F-9 | Pintasan pencarian untuk platform tier C | 1 | Belum |
+| F-9 | Pintasan pencarian untuk platform tier C | 1 | Sebagian: di dialog detail (LinkedIn, Jobstreet, Indeed, Glints) |
 | F-10 | Validasi: cek tautan hidup, skor, deduplikasi, kedaluwarsa | 3 | Belum |
 | F-11 | Pencarian tersimpan dan notifikasi lowongan baru yang cocok (Telegram ke diri sendiri) | 4 | Belum |
 | F-12 | Panel cakupan: berapa sumber dan perusahaan dipantau, kapan terakhir berhasil | 3 | Belum |
 | F-13 | Hosting statis dengan kontrol akses | 5 | Opsional |
+| F-14 | Dialog detail lowongan: info, skor kepercayaan dan rubriknya, lowongan lain di perusahaan/kota yang sama, tautan dalam (`#job=`) | 0 | Selesai |
+| F-15 | Profil perusahaan: statistik di radar, `companies` dari `jobs.json`, Wikipedia/Wikidata atas permintaan | 0 | Selesai |
 
 ## 10. Persyaratan non-fungsional
 
-- **Ringan:** `index.html` di bawah 250 KB (saat ini sekitar 120 KB), tanpa framework dan tanpa langkah build. Tampilan awal di bawah 2 detik pada jaringan 4G.
-- **Berfungsi tanpa internet** untuk peta dasar dan data yang sudah dimuat (kecuali pustaka MapLibre dari CDN, bisa disalin lokal).
-- **Aman:** semua teks dari `jobs.json` di-escape, hanya tautan `http(s)`, `rel="noopener noreferrer"`.
+- **Ringan:** `index.html` di bawah 250 KB (saat ini sekitar 165 KB), tanpa framework dan tanpa langkah build. three.js dari CDN sekitar 170 KB terkompresi. Peta hanya merender saat ada perubahan. Tampilan awal di bawah 2 detik pada jaringan 4G.
+- **Berfungsi tanpa internet** untuk daftar, filter, dan data yang sudah dimuat. Peta 3D butuh three.js dari CDN (bisa disalin lokal).
+- **Aman:** semua teks dari `jobs.json` dan Wikipedia di-escape, hanya tautan `http(s)`, `rel="noopener noreferrer"`, Content-Security-Policy membatasi skrip ke CDN jsDelivr dan koneksi ke Wikipedia/Wikidata, `referrer` tidak dikirim.
 - **Responsif** sampai lebar 360 px. **Aksesibel:** dapat dioperasikan dengan keyboard, kontras memadai, mengikuti tema gelap/terang.
 - **Jujur:** data contoh selalu berlabel jelas dan tidak pernah tampil seperti lowongan asli.
 

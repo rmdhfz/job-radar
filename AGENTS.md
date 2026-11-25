@@ -6,11 +6,12 @@ Product requirements live in `PRD.md`: read it before changing behaviour.
 
 ## What this is
 
-A personal job-radar portal for Indonesia: one static `index.html` that shows jobs on a 3D map (MapLibre GL, extruded
-bars per city) with filters for industry, company, salary, posting time, location and validity. Data comes from a
+A personal job-radar portal for Indonesia: one static `index.html` that shows jobs on a 3D map (three.js: extruded
+islands, instanced bars per city) with filters for industry, company, salary, posting time, location and validity. Data comes from a
 `jobs.json` file (contract: `schema/jobs.schema.json`). Without it, the page shows clearly labelled **demo data**.
 
-Status: Phase 0 (UI) done. Phase 1+ (ingestion pipeline) not started. See PRD section 9.
+Status: Phase 0 (UI) done, including the three.js map, job detail dialog and company profiles. Phase 1+ (ingestion pipeline)
+not started. See PRD section 9.
 
 ## Layout
 
@@ -19,6 +20,7 @@ index.html              the whole portal: CSS, JS, and an embedded offline basem
 schema/jobs.schema.json data contract between pipeline and portal
 tools/build_land.mjs    regenerates the embedded basemap between <!--LAND:START--> and <!--LAND:END-->
 tools/smoke.cjs         browser smoke test (Playwright); the definition of "works"
+tools/fixtures/         saved real Wikipedia/Wikidata responses used by the smoke test (never hand-edit them)
 PRD.md                  requirements, source strategy, validity rules, phases
 ```
 
@@ -52,11 +54,17 @@ Opening `index.html` via `file://` works too (falls back to demo data; use the "
 
 - Keep `index.html` a **single file with no build step and no framework**. Budget: under 250 KB, first paint under 2 s.
   New dependencies need a strong reason; prefer a few lines of plain JS.
-- Pin CDN versions exactly (currently `maplibre-gl@5.24.1`; v6 is ESM-only and breaks the plain `<script>` tag).
+- Pin CDN versions exactly (currently `three@0.187.0`, loaded through the import map in `<head>`; the map that rewrites
+  `three.core.js` to `three.core.min.js` must keep the same version). Keep `three` in `package.json` at the same version:
+  the smoke test serves it from `node_modules`.
+- The 3D map is a `<script type="module">` that attaches itself via `JobRadar.attachMap()`. The list and filters must keep
+  working without it (CDN down, no WebGL). It renders on demand only; do not add an always-running loop.
+- Company profiles: `companies` in `jobs.json` first, Wikipedia/Wikidata only after the user clicks. Never send anything to a
+  third party without a click, and keep the attribution. The CSP in `<head>` lists every allowed origin; update it on purpose.
 - Indonesian for all user-facing text, English for code. Money is rupiah per month, shown as "Rp 12–18 jt".
 - Time is stored in UTC ISO 8601 and shown relative ("3 jam lalu"). Use the gazetteer (`CITIES`) for coordinates;
   add a city there rather than hard-coding coordinates in data.
-- Map bars are rebuilt on zoom so they keep a constant on-screen size. Do not switch to fixed-meter heights.
+- Map bars are rescaled every frame from the camera distance so they keep a constant on-screen size. Do not switch to fixed world heights.
 - localStorage access is always wrapped in try/catch (it can throw or be empty in private windows).
 - Respect `prefers-color-scheme` and `prefers-reduced-motion`. Keep everything usable down to 360 px width.
 
@@ -75,6 +83,10 @@ never open-and-reformat it, and edit it only through `npm run build:land`.
 
 ## Not verified yet (be honest about these)
 
-- The optional online basemap ("Peta detail", CARTO style) was only tested for its failure path (fallback to the
-  offline map), not against the live service.
+- three.js is tested from `node_modules` (unminified). The jsDelivr auto-minified `*.min.js` files were checked to exist
+  and to import `./three.core.js`, but the page was not loaded against the live CDN in the smoke test.
+- The Wikipedia/Wikidata lookup is tested against saved real responses, not the live API. Matching by name can pick the
+  wrong article for ambiguous names; the UI says so.
+- The Jobstreet and Indeed search-shortcut URL formats could not be checked automatically (bot protection, HTTP 403).
+- Low-end phones: frame rate on a real device was not measured (only headless Chromium with SwiftShader).
 - No real data source exists yet; every number on the page is demo data until Phase 1.
