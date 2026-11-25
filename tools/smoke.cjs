@@ -59,6 +59,11 @@ async function wire(page, problems, wikiCalls) {
   await page.click('[data-quick="sal"]');
   assert((await page.$$eval('.job .tag.sal', (e) => e.map((x) => x.textContent))).every((t) => !t.includes('tidak tercantum')), '"Ada gaji" chip hides unknown salaries');
   await page.click('[data-quick="sal"]');
+  await page.click('[data-quick="role:IT & Software"]');
+  const roles = await page.$$eval('.job', (e) => e.map((x) => x.textContent));
+  assert(roles.length > 0 && roles.every((t) => t.includes('IT & Software')), '"IT & Software" chip keeps only IT roles');
+  assert(await page.evaluate(() => JobRadar.state.jobs.filter((j) => /Backend Engineer|DevOps Engineer|IT Manager/.test(j.title)).every((j) => j.role === 'IT & Software')), 'IT titles are classified as IT');
+  await page.click('[data-quick="role:IT & Software"]');
   await page.click('#fbtn');
   assert(await page.isVisible('#salMin'), 'Filter button opens the full panel');
 

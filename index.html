@@ -6,8 +6,28 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://id.wikipedia.org https://en.wikipedia.org https://www.wikidata.org https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="Peta 3D lowongan kerja di seluruh Indonesia, dengan filter, skor kepercayaan, dan profil perusahaan.">
-<title>Radar Loker Indonesia</title>
+<title>Radar Loker Indonesia: Peta 3D Lowongan Kerja Terverifikasi</title>
+<meta name="description" content="Cari lowongan kerja terbaru di seluruh Indonesia lewat peta 3D. Diambil langsung dari situs karier dan ATS resmi perusahaan, dicek ulang tiap 3 jam, dengan skor kepercayaan dan profil perusahaan.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://job-radar.buitenzorg.dev/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0b0f15" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Radar Loker Indonesia">
+<meta property="og:locale" content="id_ID">
+<meta property="og:url" content="https://job-radar.buitenzorg.dev/">
+<meta property="og:title" content="Radar Loker Indonesia: Peta 3D Lowongan Kerja Terverifikasi">
+<meta property="og:description" content="Lowongan kerja terbaru dari situs karier resmi perusahaan di seluruh Indonesia, di atas peta 3D. Dicek ulang tiap 3 jam.">
+<meta property="og:image" content="https://job-radar.buitenzorg.dev/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Peta 3D Indonesia dengan batang jumlah lowongan per kota">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Radar Loker Indonesia: Peta 3D Lowongan Kerja Terverifikasi">
+<meta name="twitter:description" content="Lowongan kerja terbaru dari situs karier resmi perusahaan di seluruh Indonesia, di atas peta 3D.">
+<meta name="twitter:image" content="https://job-radar.buitenzorg.dev/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Radar Loker Indonesia","alternateName":"Job Radar Indonesia","url":"https://job-radar.buitenzorg.dev/","inLanguage":"id-ID","description":"Peta 3D lowongan kerja di seluruh Indonesia dari situs karier dan ATS resmi perusahaan.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://job-radar.buitenzorg.dev/?q={search_term_string}"},"query-input":"required name=search_term_string"}}</script>
 <script type="importmap">{"imports":{
 "three":"https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.min.js",
 "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/",
@@ -122,6 +142,10 @@ button.on,button[aria-pressed=true].tog{background:var(--accent);border-color:va
 .acts .ib{width:30px;height:30px}
 .acts .ib[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .empty{padding:28px 16px;text-align:center;color:var(--mute)}
+.about{margin:16px 2px 8px;padding:14px 14px 4px;border-top:1px solid var(--line);font-size:13px;line-height:1.6;color:var(--mute)}
+.about h2{font-size:14px;margin:0 0 6px;color:var(--ink)}
+.about p{margin:0 0 10px}
+.about b{color:var(--ink)}
 /* map */
 .mapwrap{position:relative;min-width:0;min-height:0;overflow:hidden;background:radial-gradient(120% 95% at 50% 38%,var(--sea) 0%,var(--sea-deep) 100%)}
 #scene{position:absolute;inset:0;touch-action:none}
@@ -131,7 +155,8 @@ button.on,button[aria-pressed=true].tog{background:var(--accent);border-color:va
 .lbl b{color:var(--mute);font-weight:650}
 .lbl.sel{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .lbl.sel b{color:inherit}
-.tip{position:absolute;left:0;top:0;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:12.5px;box-shadow:var(--shadow);z-index:4;display:none;max-width:250px}
+.tip{position:absolute;left:0;top:0;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:12.5px;box-shadow:var(--shadow);z-index:4;display:none;max-width:300px;line-height:1.5}
+.tip-row{margin:3px 0}
 .hud{position:absolute;left:12px;top:12px;z-index:3;display:flex;flex-direction:column;gap:8px;max-width:min(340px,calc(100% - 170px));pointer-events:none}
 .hud>*{pointer-events:auto}
 .stats{display:flex;gap:6px;flex-wrap:wrap}
@@ -249,6 +274,8 @@ dialog#detail[open] .dlg{animation:slide .2s ease-out}
         <button id="fbtn" type="button" aria-expanded="false" aria-controls="filters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filter <span class="badge" id="fcount"></span></button>
       </div>
       <div class="quick" role="group" aria-label="Filter cepat">
+        <button type="button" class="qc" data-quick="role:IT & Software" aria-pressed="false">IT &amp; Software</button>
+        <button type="button" class="qc" data-quick="role:Data & AI" aria-pressed="false">Data &amp; AI</button>
         <button type="button" class="qc" data-quick="since:24" aria-pressed="false">24 jam</button>
         <button type="button" class="qc" data-quick="since:72" aria-pressed="false">3 hari</button>
         <button type="button" class="qc" data-quick="since:168" aria-pressed="false">7 hari</button>
@@ -260,7 +287,8 @@ dialog#detail[open] .dlg{animation:slide .2s ease-out}
       </div>
       <div class="filters" id="filters" hidden>
         <div class="fgrid">
-          <div class="f">Industri<details class="dd" id="indDD"><summary id="indSum">Semua industri</summary><div class="ddlist" id="industries"></div></details></div>
+          <label class="f">Bidang pekerjaan<select id="role"><option value="">Semua bidang</option></select></label>
+          <div class="f">Industri perusahaan<details class="dd" id="indDD"><summary id="indSum">Semua industri</summary><div class="ddlist" id="industries"></div></details></div>
           <label class="f">Perusahaan<input id="company" list="companies" placeholder="Semua"><datalist id="companies"></datalist></label>
           <label class="f">Diposting<select id="since"><option value="0">Kapan saja</option><option value="24">24 jam terakhir</option><option value="72">3 hari terakhir</option><option value="168">7 hari terakhir</option><option value="720">30 hari terakhir</option></select></label>
           <label class="f">Lokasi kerja<select id="work"><option value="">Semua</option><option value="onsite">Di kantor</option><option value="hybrid">Hybrid</option><option value="remote">Remote</option></select></label>
@@ -360,6 +388,23 @@ function coreName(n){ return s(n).replace(/\([^)]*\)/g," ").replace(/[.,]/g," ")
 function initials(n){ const w=(coreName(n)||n).split(" ").filter(Boolean); return (w.length>1?w[0][0]+w[1][0]:(w[0]||"?").slice(0,2)).toUpperCase(); }
 
 /* ------------------------------------------------------------------ data layer */
+// "Bidang" = the job's function, derived from its title with fixed keyword rules (first match wins).
+// "Industri" stays the employer's industry. Rules are deliberately conservative: no match means "Lainnya".
+const ROLES=[
+ ["Produk & Desain",/\b(product (manager|owner|director|lead|designer|analyst|management)|ux|ui\/ux|designer|creative|ux researcher|illustrator|animator)\b/i],
+ ["IT & Software",/\b(software|back-?end|front-?end|full-?stack|mobile|android|ios|devops|devsecops|sre|site reliability|cloud|platform engineer|(it|cloud) infrastructure|infrastructure (engineer|lead|specialist)|network engineer|noc|developer|programmer|engineering manager|tech lead|cto|qa|test engineer|automation engineer|security (engineer|specialist|analyst)|cyber|infosec|penetration|soc analyst|systems? (administrator|engineer|analyst)|sysadmin|database admin|dba|erp|sap|oss\/bss|scada|web|blockchain|informatics|informatika|teknologi informasi|jaringan|pengembang|helpdesk|it support)\b/i],
+ ["Data & AI",/\b(data|analytics|business intelligence|bi|machine learning|ml|ai|artificial intelligence|statistic\w*)\b/i],
+ ["Keuangan & Akuntansi",/\b(finance|financial|accounting|accountant|tax|treasury|audit|auditor|controller|akuntan\w*|keuangan|finops|billing|collection|risk|compliance|kyc|kyb|aml|mlro|fraud|credit|kredit)\b/i],
+ ["Sales & Bisnis",/\b(sales|business development|account (manager|executive)|partnership|commercial|marketing|growth|relationship manager|merchant|acquisition|agent partner|hunter|customer success|brand\w*|affiliate|seo|content|social media)\b/i],
+ ["SDM & Legal",/\b(hr|human resources?|people (partner|operations|business partner)|talent acquisition|hiring|recruit\w*|legal|counsel|paralegal|general affairs)\b/i],
+ ["Operasional",/\b(operations?|operasional|logistics?|supply chain|warehouse|driver|courier|fleet|field|area manager|branch|kepala cabang|business manager|team leader|supervisor|customer service|support)\b/i],
+];
+const ROLE_NAMES=ROLES.map((r)=>r[0]).concat("Lainnya");
+function roleOf(title){
+  if(/\b(IT|ICT)\b/.test(title)) return "IT & Software";   // case-sensitive: "IT Audit", "IT Manager", not the word "it"
+  for(const [name,re] of ROLES) if(re.test(title)) return name;
+  return "Lainnya";
+}
 function normalizeJob(r){
   if(!r||typeof r!=="object") return null;
   const id=s(r.id)||null, title=clip(s(r.title),160), company=clip(s(r.company),120);
@@ -370,7 +415,7 @@ function normalizeJob(r){
   else if(Number.isFinite(r.lng)&&Number.isFinite(r.lat)&&Math.abs(r.lng)<=180&&Math.abs(r.lat)<=90){ lng=r.lng; lat=r.lat; }
   else if(city&&city.toLowerCase()!=="remote"&&work(r)!=="remote") return null; // unknown place and not remote
   const num=(v)=>Number.isFinite(v)&&v>0?v:null;
-  return {id,title,company,industry:s(r.industry)||"Lainnya",city:city||"Remote",province:prov||"",lng,lat,
+  return {id,title,company,industry:s(r.industry)||"Lainnya",role:roleOf(title),city:city||"Remote",province:prov||"",lng,lat,
     salMin:num(r.salary_min),salMax:num(r.salary_max),work:work(r),level:clip(s(r.level),60),posted,
     verifiedAt:Date.parse(r.last_verified_at)||null,status:["active","unverified","expired"].includes(r.status)?r.status:"unverified",
     trust:Number.isFinite(r.trust)?Math.max(0,Math.min(100,Math.round(r.trust))):50,source:s(r.source_label)||s(r.source)||"",
@@ -442,13 +487,14 @@ function readFilters(){
   const n=(id)=>{const v=parseFloat($(id).value);return Number.isFinite(v)?v*1e6:null;};
   return {q:$("q").value.trim().toLowerCase(),company:$("company").value.trim().toLowerCase(),since:+$("since").value,
     salMin:n("salMin"),salMax:n("salMax"),unk:$("unkSal").checked,work:$("work").value,province:$("province").value,
-    ver:$("verOnly").checked,saved:$("savedOnly").checked,sus:$("susShow").checked};
+    ver:$("verOnly").checked,saved:$("savedOnly").checked,sus:$("susShow").checked,role:$("role").value};
 }
 function passes(j,f,skip){
   const v=validity(j);
   if(v==="expired") return false;
   if(v==="suspect"&&!f.sus) return false;
-  if(f.q&&!(j.title+" "+j.company+" "+j.city+" "+j.industry).toLowerCase().includes(f.q)) return false;
+  if(f.q&&!(j.title+" "+j.company+" "+j.city+" "+j.industry+" "+j.role).toLowerCase().includes(f.q)) return false;
+  if(f.role&&j.role!==f.role) return false;
   if(f.company&&!j.company.toLowerCase().includes(f.company)) return false;
   if(f.since&&Date.now()-j.posted>f.since*HOUR) return false;
   if(f.work&&j.work!==f.work) return false;
@@ -479,27 +525,33 @@ function render(){
   $("indSum").textContent=state.ind.size?`${state.ind.size} industri dipilih`:"Semua industri";
   $("count").textContent=`${list.length} lowongan`;
   $("cityChip").innerHTML=state.city?`<button type="button" class="citychip" data-city="${esc(state.city)}" aria-label="Lepas filter kota ${esc(state.city)}">${esc(state.city)} ✕</button>`:"";
-  const adv=[f.company,f.since,f.salMin,f.salMax,!f.unk,f.work,f.province,f.ver,f.saved,f.sus,state.ind.size].filter(Boolean).length;
+  const adv=[f.company,f.since,f.salMin,f.salMax,!f.unk,f.work,f.province,f.ver,f.saved,f.sus,f.role,state.ind.size].filter(Boolean).length;
   $("fcount").textContent=adv||"";
   $("clear").disabled=!activeCount(f);
   document.querySelectorAll("[data-quick]").forEach((b)=>b.setAttribute("aria-pressed",String(quickOn(b.dataset.quick,f))));
   const box=$("list");
-  if(!list.length){ box.innerHTML=`<div class="empty">Tidak ada lowongan yang cocok.<br>Coba longgarkan filter${state.city?` atau klik ${esc(state.city)} lagi untuk melepas kota`:""}.</div>`; }
-  else box.innerHTML=list.slice(0,shown).map(card).join("")+(list.length>shown?`<div class="empty"><button type="button" id="more">Tampilkan lebih banyak (${list.length-shown})</button></div>`:"");
+  if(!list.length){ box.innerHTML=`<div class="empty">Tidak ada lowongan yang cocok.<br>Coba longgarkan filter${state.city?` atau klik ${esc(state.city)} lagi untuk melepas kota`:""}.</div>`+ABOUT; }
+  else box.innerHTML=list.slice(0,shown).map(card).join("")+(list.length>shown?`<div class="empty"><button type="button" id="more">Tampilkan lebih banyak (${list.length-shown})</button></div>`:"")+ABOUT;
   hud(pool);
   lastPool=pool; if(api.map) api.map.update(pool);
 }
 function quickOn(k,f){ const [n,v]=k.split(":");
-  return n==="since"?String(f.since)===v:n==="work"?f.work===v:n==="ver"?f.ver:n==="saved"?f.saved:n==="sal"?!f.unk:false; }
+  return n==="since"?String(f.since)===v:n==="role"?f.role===v:n==="work"?f.work===v:n==="ver"?f.ver:n==="saved"?f.saved:n==="sal"?!f.unk:false; }
 function toggleQuick(k){ const [n,v]=k.split(":"), f=readFilters();
   if(n==="since") $("since").value=String(f.since)===v?"0":v;
   else if(n==="work") $("work").value=f.work===v?"":v;
+  else if(n==="role") $("role").value=f.role===v?"":v;
   else if(n==="ver") $("verOnly").checked=!f.ver;
   else if(n==="saved") $("savedOnly").checked=!f.saved;
   else if(n==="sal") $("unkSal").checked=!f.unk;
   shown=60; render(); }
 function toggleFilters(open){ const o=open??$("filters").hidden; $("filters").hidden=!o; $("fbtn").setAttribute("aria-expanded",String(o)); }
-function activeCount(f){return [f.q,f.company,f.since,f.salMin,f.salMax,!f.unk,f.work,f.province,f.ver,f.saved,f.sus,state.ind.size,state.city].filter(Boolean).length;}
+const ABOUT=`<section class="about" aria-labelledby="aboutH"><h2 id="aboutH">Tentang Radar Loker Indonesia</h2>
+<p>Radar Loker Indonesia menampilkan lowongan kerja di seluruh Indonesia di atas peta 3D, supaya Anda bisa melihat di kota mana lowongan baru muncul dan melamar lebih cepat.</p>
+<p><b>Sumber data.</b> Lowongan diambil langsung dari situs karier resmi perusahaan dan sistem rekrutmen (ATS) publik mereka, misalnya Greenhouse, Lever, Workable, dan halaman karier Workday. Portal ini tidak mengambil data dari LinkedIn, Jobstreet, Indeed, atau Kalibrr; untuk platform itu tersedia tautan pencarian di detail lowongan.</p>
+<p><b>Validitas.</b> Data diperbarui tiap 3 jam. Lowongan yang hilang dari sumbernya dua kali berturut-turut dianggap kedaluwarsa. Label "Terverifikasi" hanya diberikan bila sumbernya resmi dan lowongan masih tayang. Gaji yang tidak dicantumkan perusahaan tidak pernah ditebak. Jangan pernah membayar biaya apa pun untuk melamar kerja.</p>
+<p class="sub">Peta dasar: Natural Earth. Koordinat kota: GeoNames (CC BY 4.0). Profil perusahaan: Wikipedia (CC BY-SA 4.0) dan Wikidata.</p></section>`;
+function activeCount(f){return [f.q,f.role,f.company,f.since,f.salMin,f.salMax,!f.unk,f.work,f.province,f.ver,f.saved,f.sus,state.ind.size,state.city].filter(Boolean).length;}
 function badge(j){ const v=validity(j);
   return v==="verified"?`<span class="tag verified" title="Sumber resmi dan dicek ulang">Terverifikasi</span>`
     :v==="suspect"?`<span class="tag suspect" title="Skor kepercayaan di bawah 40">Mencurigakan</span>`
@@ -514,7 +566,7 @@ function card(j){
     <div class="jtop"><h3><button type="button" class="open" data-open-id="${id}">${esc(j.title)}</button></h3>
       <span class="when">${fresh?`<span class="tag fresh">Baru</span>`:""}${ago(j.posted)}</span></div>
     <div class="co"><span class="av" style="background:hsl(${hue(j.company)} 50% 42%)" aria-hidden="true">${esc(initials(j.company))}</span><span>${esc(j.company)} · ${esc(j.city)}${j.province?`, ${esc(j.province)}`:""}</span></div>
-    <div class="facts"><span class="tag sal${sal?"":" none"}">${esc(rupiah(j))}</span><span>${WORK[j.work]}</span><span>${esc(j.industry)}</span>${badge(j)}</div>
+    <div class="facts"><span class="tag sal${sal?"":" none"}">${esc(rupiah(j))}</span><span>${WORK[j.work]}</span><span title="Bidang pekerjaan">${esc(j.role)}</span><span title="Industri perusahaan">${esc(j.industry)}</span>${badge(j)}</div>
     <div class="acts">${applyLink(j,"","Lamar ↗")}<button type="button" data-open-id="${id}">Detail</button><span class="grow"></span>
       <button type="button" class="ib" data-mark="saved" data-id="${id}" aria-pressed="${m==="saved"}" aria-label="Simpan lowongan" title="${m==="saved"?"Disimpan":"Simpan"}">${m==="saved"?"★":"☆"}</button>
       <button type="button" class="ib" data-mark="applied" data-id="${id}" aria-pressed="${m==="applied"}" aria-label="Tandai sudah dilamar" title="${m==="applied"?"Sudah dilamar":"Tandai sudah dilamar"}">✓</button></div></article>`;
@@ -557,7 +609,7 @@ function jobPanel(j){
   ${j.summary?`<p class="prose">${esc(j.summary)}</p>`:`<p class="sub">Deskripsi lengkap ada di sumber asli. Portal sengaja hanya menyimpan data ringkas dan menautkan ke lowongan resmi.</p>`}
   <h4>Info lowongan</h4>
   <dl class="info">${dd("Diposting",`${ago(j.posted)} · ${fmtDate(j.posted)}`)}${dd("Terakhir dicek",j.verifiedAt?`${ago(j.verifiedAt)}`:"Belum pernah")}
-    ${dd("Lokasi",j.city+(j.province?`, ${j.province}`:""))}${dd("Lokasi kerja",WORK[j.work])}
+    ${dd("Lokasi",j.city+(j.province?`, ${j.province}`:""))}${dd("Lokasi kerja",WORK[j.work])}${dd("Bidang",j.role)}${dd("Industri perusahaan",j.industry)}
     ${dd("Gaji",j.salMin||j.salMax?rupiah(j):"Tidak tercantum di sumber")}${dd("Sumber",j.source||"Tidak diketahui")}${j.level?dd("Level",j.level):""}</dl>
   <h4>Validitas</h4>
   <div class="trust ${v}"><div class="trow"><b>${vLabel}</b><span>Skor ${j.trust}/100</span></div>
@@ -755,9 +807,19 @@ function setJobs(raw,generatedAt,demo){
   const co=[...new Set(jobs.map((j)=>j.company))].sort(); $("companies").innerHTML=co.map((c)=>`<option value="${esc(c)}">`).join("");
   const pv=[...new Set(jobs.map((j)=>j.province).filter(Boolean))].sort(); const cur=$("province").value;
   $("province").innerHTML=`<option value="">Semua</option>`+pv.map((p)=>`<option ${p===cur?"selected":""}>${esc(p)}</option>`).join("");
+  const rc={}; jobs.forEach((j)=>{ rc[j.role]=(rc[j.role]||0)+1; });
+  $("role").innerHTML=`<option value="">Semua bidang</option>`+ROLE_NAMES.map((r)=>`<option value="${esc(r)}">${esc(r)} (${rc[r]||0})</option>`).join("");
   const upd=generatedAt&&Date.parse(generatedAt)?`diperbarui ${ago(Date.parse(generatedAt))}`:(demo?"data contoh":"");
   $("meta").textContent=`${jobs.length} lowongan tercatat · ${co.length} perusahaan${upd?` · ${upd}`:""}${dropped?` · ${dropped} baris dilewati karena tidak valid`:""}`;
   render();
+}
+function applyParams(){
+  let p; try{ p=new URLSearchParams(location.search); }catch(e){ return; }
+  const q=s(p.get("q")||""), b=s(p.get("bidang")||""), k=s(p.get("kota")||"");
+  if(q) $("q").value=q.slice(0,80);
+  if(b&&ROLE_NAMES.includes(b)) $("role").value=b;
+  if(k&&state.jobs.some((j)=>j.city===k)) state.city=k;
+  if(q||b||k){ shown=60; render(); }
 }
 async function boot(){
   loadMarks();
@@ -767,6 +829,7 @@ async function boot(){
   let loaded=false;
   try{ if(location.protocol==="file:") throw 0; const r=await fetch("jobs.json",{cache:"no-store"}); if(r.ok){ const d=await r.json(); setJobs(d,d.generated_at,false); loaded=true; } }catch(e){}
   if(!loaded) setJobs(demoJobs(),null,true);
+  applyParams();
   openFromHash();
 }
 document.addEventListener("input",(e)=>{
@@ -790,7 +853,7 @@ document.addEventListener("click",(e)=>{
 document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ if($("indDD").open) $("indDD").open=false; else if(!$("filters").hidden&&e.target.closest(".controls")){ toggleFilters(false); $("fbtn").focus(); } } });
 addEventListener("hashchange",openFromHash);
 $("clear").onclick=()=>{ document.querySelectorAll(".fgrid input[type=number],#company,#q").forEach((i)=>i.value="");
-  $("since").value="0";$("work").value="";$("province").value="";$("unkSal").checked=true;$("verOnly").checked=false;$("savedOnly").checked=false;$("susShow").checked=false;
+  $("since").value="0";$("work").value="";$("role").value="";$("province").value="";$("unkSal").checked=true;$("verOnly").checked=false;$("savedOnly").checked=false;$("susShow").checked=false;
   state.ind.clear();state.city=null;shown=60;render(); };
 $("reset").onclick=()=>{ if(api.map) api.map.home(); };
 $("spin").onclick=()=>{ const on=$("spin").getAttribute("aria-pressed")!=="true"; $("spin").setAttribute("aria-pressed",on); if(api.map) api.map.spin(on); };
@@ -801,7 +864,7 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{ if(ap
 $("file").onchange=async(e)=>{ const f=e.target.files[0]; if(!f) return; try{ const d=JSON.parse(await f.text()); setJobs(d,d&&d.generated_at,false); toast("Data dimuat dari "+f.name); }catch(err){ toast("Berkas tidak valid: bukan JSON yang benar."); } e.target.value=""; };
 Object.assign(api,{state,CITIES,DAY,normalizeJob,normalizeCompany,validity,passes,readFilters,render,selectCity,openDetail,esc,ago,mapFailed,
   pickWikiPage,wikiSections,parseWikidata,lookupWiki,coreName,
-  attachMap(m){ api.map=m; $("mapMsg").hidden=true; m.update(lastPool); }});
+  attachMap(m){ api.map=m; $("mapMsg").hidden=true; m.update(lastPool); if(state.city) m.fly(state.city); }});
 window.JobRadar=api;
 boot();
 </script>
@@ -815,27 +878,48 @@ if(THREE){ try{ R.attachMap(createMap()); }catch(e){ console.error(e); R.mapFail
 
 function createMap(){
   const host=document.getElementById("scene"), labelsBox=document.getElementById("labels"), tip=document.getElementById("tip");
-  const DAY=R.DAY, CX=118, CY=-2.5, LAND_H=.16, MAXB=160;
+  const DAY=R.DAY, CX=118, CY=-2.5, LAND_H=.18, NB_H=.07, MAXB=200;
   const reduce=matchMedia("(prefers-reduced-motion: reduce)");
+  const small=()=>innerWidth<=820;
   const P=(lng,lat)=>new THREE.Vector3(lng-CX,0,-(lat-CY));
   let W=1, H=1;
 
-  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"low-power"});
+  /* ---- renderer: tone mapping + soft shadows; still rendered on demand only */
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"high-performance"});
   renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+  renderer.toneMapping=THREE.NeutralToneMapping??THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.05;
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFShadowMap;
   renderer.domElement.tabIndex=0;
   renderer.domElement.setAttribute("aria-label","Peta 3D lowongan. Seret untuk menggeser, tombol panah untuk bergerak.");
   host.appendChild(renderer.domElement);
   const scene=new THREE.Scene();
   scene.fog=new THREE.Fog(0xffffff,60,200);
   const camera=new THREE.PerspectiveCamera(35,1,.3,900);
-  scene.add(new THREE.HemisphereLight(0xffffff,0x6f7b8f,1.45));
-  const sun=new THREE.DirectionalLight(0xffffff,1.9); sun.position.set(-18,40,22); scene.add(sun);
+  const hemi=new THREE.HemisphereLight(0xffffff,0x5d6b80,1.6); scene.add(hemi);
+  const sun=new THREE.DirectionalLight(0xfff4e6,2.6); sun.position.set(-14,34,20); scene.add(sun); scene.add(sun.target);
+  sun.castShadow=true;
+  const sm=small()?1024:2048; sun.shadow.mapSize.set(sm,sm);
+  Object.assign(sun.shadow.camera,{left:-34,right:34,top:22,bottom:-22,near:1,far:120}); sun.shadow.camera.updateProjectionMatrix();
+  sun.shadow.bias=-.0004; sun.shadow.normalBias=.02; sun.shadow.radius=3;
 
-  const mats={id:new THREE.MeshLambertMaterial(),nb:new THREE.MeshLambertMaterial(),side:new THREE.MeshLambertMaterial(),
-    coast:new THREE.LineBasicMaterial({transparent:true,opacity:.75}),grid:new THREE.LineBasicMaterial({transparent:true,opacity:.45}),
-    bar:new THREE.MeshLambertMaterial({color:0xffffff})};
+  const mats={
+    id:new THREE.MeshStandardMaterial({roughness:.92,metalness:0}),
+    nb:new THREE.MeshStandardMaterial({roughness:1,metalness:0}),
+    side:new THREE.MeshStandardMaterial({roughness:1,metalness:0}),
+    coast:new THREE.LineBasicMaterial({transparent:true,opacity:.8}),
+    grid:new THREE.LineBasicMaterial({transparent:true,opacity:.4}),
+    bar:new THREE.MeshStandardMaterial({color:0xffffff,roughness:.45,metalness:.08})};
+  // bars: darker at the base, bright and slightly glowing at the top (gradient on top of the instance colour)
+  mats.bar.onBeforeCompile=(sh)=>{
+    sh.vertexShader=sh.vertexShader.replace("#include <common>","#include <common>\nvarying float vH;")
+      .replace("#include <begin_vertex>","#include <begin_vertex>\nvH=position.y;");
+    sh.fragmentShader=sh.fragmentShader.replace("#include <common>","#include <common>\nvarying float vH;")
+      .replace("#include <color_fragment>","#include <color_fragment>\ndiffuseColor.rgb*=mix(.5,1.1,vH);")
+      .replace("#include <emissivemap_fragment>","#include <emissivemap_fragment>\ntotalEmissiveRadiance+=diffuseColor.rgb*(.18+.55*smoothstep(.9,1.,vH));");
+  };
 
-  /* ---- land: extruded islands from the embedded Natural Earth data */
+  /* ---- land: extruded islands from the embedded Natural Earth data; Indonesia raised, neighbours lower and muted */
   const LAND=JSON.parse(document.getElementById("land-data").textContent);
   const idShapes=[], nbShapes=[], coast=[];
   for(const f of LAND.features){
@@ -846,22 +930,35 @@ function createMap(){
       if(f.properties.n) for(const ring of poly) for(let i=1;i<ring.length;i++) coast.push(ring[i-1][0]-CX,LAND_H+.004,-(ring[i-1][1]-CY),ring[i][0]-CX,LAND_H+.004,-(ring[i][1]-CY));
     }
   }
-  const extrude=(shapes)=>{ const g=new THREE.ExtrudeGeometry(shapes,{depth:LAND_H,bevelEnabled:false,curveSegments:1}); g.rotateX(-Math.PI/2); return g; };
-  scene.add(new THREE.Mesh(extrude(nbShapes),[mats.nb,mats.side]));
-  scene.add(new THREE.Mesh(extrude(idShapes),[mats.id,mats.side]));
+  const extrude=(shapes,depth)=>{ const g=new THREE.ExtrudeGeometry(shapes,{depth,bevelEnabled:false,curveSegments:1}); g.rotateX(-Math.PI/2); return g; };
+  const nbMesh=new THREE.Mesh(extrude(nbShapes,NB_H),[mats.nb,mats.side]); nbMesh.receiveShadow=true; scene.add(nbMesh);
+  const idMesh=new THREE.Mesh(extrude(idShapes,LAND_H),[mats.id,mats.side]); idMesh.receiveShadow=true; scene.add(idMesh);
   const coastGeo=new THREE.BufferGeometry(); coastGeo.setAttribute("position",new THREE.Float32BufferAttribute(coast,3));
   scene.add(new THREE.LineSegments(coastGeo,mats.coast));
-  // graticule every 5 degrees, a quiet hint of scale
   const gl=[]; for(let x=90;x<=145;x+=5) gl.push(x-CX,-.02,-(10-CY),x-CX,-.02,-(-15-CY)); for(let y=-15;y<=10;y+=5) gl.push(90-CX,-.02,-(y-CY),145-CX,-.02,-(y-CY));
   const gridGeo=new THREE.BufferGeometry(); gridGeo.setAttribute("position",new THREE.Float32BufferAttribute(gl,3));
   scene.add(new THREE.LineSegments(gridGeo,mats.grid));
 
-  /* ---- bars (one instanced hexagonal prism per city) and pulse rings for cities with jobs from the last 24 h */
+  /* ---- per-city objects: instanced hex bars, instanced ground glow, pulse rings (fresh jobs), a beam over the selected city */
   const barGeo=new THREE.CylinderGeometry(1,1,1,6,1); barGeo.translate(0,.5,0);
-  const bars=new THREE.InstancedMesh(barGeo,mats.bar,MAXB); bars.count=0; bars.frustumCulled=false;
+  const bars=new THREE.InstancedMesh(barGeo,mats.bar,MAXB); bars.count=0; bars.frustumCulled=false; bars.castShadow=true;
   bars.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(bars);
-  const ringGeo=new THREE.RingGeometry(.78,1,40); ringGeo.rotateX(-Math.PI/2);
+
+  const glowTex=(()=>{ const c=document.createElement("canvas"); c.width=c.height=128; const x=c.getContext("2d");
+    const g=x.createRadialGradient(64,64,0,64,64,64); g.addColorStop(0,"rgba(255,255,255,1)"); g.addColorStop(.35,"rgba(255,255,255,.45)"); g.addColorStop(1,"rgba(255,255,255,0)");
+    x.fillStyle=g; x.fillRect(0,0,128,128); const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t; })();
+  const glowMat=new THREE.MeshBasicMaterial({map:glowTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false});
+  const glowGeo=new THREE.PlaneGeometry(1,1); glowGeo.rotateX(-Math.PI/2);
+  const glows=new THREE.InstancedMesh(glowGeo,glowMat,MAXB); glows.count=0; glows.frustumCulled=false; glows.renderOrder=1; scene.add(glows);
+
+  const ringGeo=new THREE.RingGeometry(.78,1,48); ringGeo.rotateX(-Math.PI/2);
   const rings=[];
+  const beamMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
+    uniforms:{color:{value:new THREE.Color("#8b7bff")},opacity:{value:.75}},
+    vertexShader:"varying float vH; void main(){ vH=position.y; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }",
+    fragmentShader:"uniform vec3 color; uniform float opacity; varying float vH; void main(){ gl_FragColor=vec4(color, opacity*pow(1.-vH,1.6)); }"});
+  const beamGeo=new THREE.CylinderGeometry(1,1,1,32,1,true); beamGeo.translate(0,.5,0);
+  const beam=new THREE.Mesh(beamGeo,beamMat); beam.visible=false; beam.renderOrder=3; scene.add(beam);
   const COL={hot:new THREE.Color("#ff6b35"),warm:new THREE.Color("#f5b700"),cool:new THREE.Color("#2ec4b6"),sel:new THREE.Color("#7c5cff")};
 
   /* ---- camera + controls */
@@ -882,27 +979,32 @@ function createMap(){
   }
   function cityPose(city){
     const c=cities.find((x)=>x.city===city)||(R.CITIES[city]&&{pos:P(R.CITIES[city][0],R.CITIES[city][1])}); if(!c) return null;
-    const off=camera.position.clone().sub(controls.target), d=Math.min(off.length(),26);
+    const off=camera.position.clone().sub(controls.target), d=Math.min(off.length(),24);
     return {t:c.pos.clone(),p:c.pos.clone().add(off.setLength(d))};
   }
 
   /* ---- data */
   let cities=[], hoverId=-1, homed=false;
   const labelEls=new Map();
+  const top=(m,n)=>[...m.entries()].sort((a,b)=>b[1]-a[1]).slice(0,n);
   function update(pool){
     const g=new Map(), now=Date.now();
     for(const j of pool){ if(j.lng==null) continue;
-      let c=g.get(j.city); if(!c){ c={city:j.city,lng:j.lng,lat:j.lat,n:0,newest:0,fresh:0,ver:0}; g.set(j.city,c); }
-      c.n++; if(j.posted>c.newest) c.newest=j.posted; if(now-j.posted<=DAY) c.fresh++; if(R.validity(j)==="verified") c.ver++; }
+      let c=g.get(j.city); if(!c){ c={city:j.city,lng:j.lng,lat:j.lat,n:0,newest:0,fresh:0,ver:0,cos:new Map(),roles:new Map()}; g.set(j.city,c); }
+      c.n++; if(j.posted>c.newest) c.newest=j.posted; if(now-j.posted<=DAY) c.fresh++; if(R.validity(j)==="verified") c.ver++;
+      c.cos.set(j.company,(c.cos.get(j.company)||0)+1); c.roles.set(j.role,(c.roles.get(j.role)||0)+1); }
     const prev=new Map(cities.map((c)=>[c.city,c]));
     cities=[...g.values()].sort((a,b)=>b.n-a.n).slice(0,MAXB);
-    for(const c of cities){ const p=prev.get(c.city); c.h=p?p.h:0; c.th=Math.min(150,18+13*Math.sqrt(c.n)); c.pos=P(c.lng,c.lat); if(reduce.matches) c.h=c.th; }
-    hoverId=-1; hideTip(); recolor(); syncLabels(); syncRings();
+    for(const c of cities){ const p=prev.get(c.city); c.h=p?p.h:0; c.th=Math.min(160,18+13*Math.sqrt(c.n)); c.pos=P(c.lng,c.lat); if(reduce.matches) c.h=c.th; }
+    hoverId=-1; hideTip(); recolor(); syncLabels(); syncRings(); syncBeam();
     window.__bars=cities.length; req();
   }
   function baseColor(c){ if(R.state.city===c.city) return COL.sel; const age=Date.now()-c.newest; return age<=DAY?COL.hot:age<=3*DAY?COL.warm:COL.cool; }
   const tmpC=new THREE.Color();
-  function recolor(){ cities.forEach((c,i)=>{ tmpC.copy(baseColor(c)); if(i===hoverId) tmpC.offsetHSL(0,0,.12); bars.setColorAt(i,tmpC); }); if(bars.instanceColor) bars.instanceColor.needsUpdate=true; }
+  function recolor(){
+    cities.forEach((c,i)=>{ tmpC.copy(baseColor(c)); if(i===hoverId) tmpC.offsetHSL(0,0,.1); bars.setColorAt(i,tmpC); glows.setColorAt(i,tmpC.multiplyScalar(glowGain)); });
+    if(bars.instanceColor) bars.instanceColor.needsUpdate=true; if(glows.instanceColor) glows.instanceColor.needsUpdate=true;
+  }
   function syncLabels(){
     const keep=new Set(cities.map((c)=>c.city));
     for(const [k,el] of labelEls) if(!keep.has(k)){ el.remove(); labelEls.delete(k); }
@@ -917,18 +1019,24 @@ function createMap(){
   }
   function syncRings(){
     const fresh=cities.filter((c)=>Date.now()-c.newest<=DAY);
-    while(rings.length<fresh.length){ const m=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:COL.hot,transparent:true,depthWrite:false,opacity:.5})); m.renderOrder=2; scene.add(m); rings.push(m); }
-    rings.forEach((m,i)=>{ m.visible=i<fresh.length; if(m.visible){ m.position.copy(fresh[i].pos).setY(LAND_H+.01); m.userData.ph=(i*.37)%1; } });
+    while(rings.length<fresh.length){ const m=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:COL.hot,transparent:true,depthWrite:false,opacity:.5,toneMapped:false})); m.renderOrder=2; scene.add(m); rings.push(m); }
+    rings.forEach((m,i)=>{ m.visible=i<fresh.length; if(m.visible){ m.position.copy(fresh[i].pos).setY(LAND_H+.012); m.userData.ph=(i*.37)%1; } });
   }
+  function syncBeam(){ const c=cities.find((x)=>x.city===R.state.city); beam.visible=!!c; if(c) beam.userData.c=c; }
 
   /* ---- per-frame layout: bars keep a constant on-screen size whatever the zoom */
   const m4=new THREE.Matrix4(), q=new THREE.Quaternion(), sc=new THREE.Vector3(), v=new THREE.Vector3();
   const worldPerPx=()=>2*camera.position.distanceTo(controls.target)*Math.tan(camera.fov*Math.PI/360)/H;
   function layout(t){
     const wpp=worldPerPx(), r=Math.min(.8,7*wpp);
-    cities.forEach((c,i)=>{ v.copy(c.pos).setY(LAND_H); sc.set(r,Math.max(1e-4,c.h*wpp),r); m4.compose(v,q,sc); bars.setMatrixAt(i,m4); });
-    bars.count=cities.length; bars.instanceMatrix.needsUpdate=true; bars.boundingSphere=null;
+    cities.forEach((c,i)=>{
+      const rr=i===hoverId?r*1.25:r;
+      v.copy(c.pos).setY(LAND_H); sc.set(rr,Math.max(1e-4,c.h*wpp),rr); m4.compose(v,q,sc); bars.setMatrixAt(i,m4);
+      const gs=Math.min(6,(26+9*Math.sqrt(c.n))*wpp*(c.h/c.th||0)); v.y=LAND_H+.006; sc.set(gs,1,gs); m4.compose(v,q,sc); glows.setMatrixAt(i,m4);
+    });
+    bars.count=glows.count=cities.length; bars.instanceMatrix.needsUpdate=true; glows.instanceMatrix.needsUpdate=true; bars.boundingSphere=null;
     for(const m of rings){ if(!m.visible) continue; const ph=reduce.matches?.35:((t/1700)+m.userData.ph)%1; m.scale.setScalar(r*(1.3+ph*2.4)); m.material.opacity=.55*(1-ph); }
+    if(beam.visible){ const c=beam.userData.c; beam.position.copy(c.pos).setY(LAND_H+c.h*wpp); beam.scale.set(r*.55,240*wpp,r*.55); }
     const d=camera.position.distanceTo(controls.target); scene.fog.near=d*1.1; scene.fog.far=d*3.2;
     return wpp;
   }
@@ -958,7 +1066,7 @@ function createMap(){
     if(cx!==tg.x||cz!==tg.z){ camera.position.x+=cx-tg.x; camera.position.z+=cz-tg.z; tg.x=cx; tg.z=cz; }
     const wpp=layout(t); renderer.render(scene,camera); placeLabels(wpp);
     if(busy||controls.autoRotate) req();
-    else if(rings.some((m)=>m.visible)&&!reduce.matches){ clearTimeout(idle); idle=setTimeout(()=>{ if(!document.hidden) req(); },40); } // ~25 fps for the pulse only
+    else if((rings.some((m)=>m.visible))&&!reduce.matches){ clearTimeout(idle); idle=setTimeout(()=>{ if(!document.hidden) req(); },40); } // ~25 fps for the pulse only
   }
   document.addEventListener("visibilitychange",()=>{ if(!document.hidden) req(); });
 
@@ -966,13 +1074,21 @@ function createMap(){
   function resize(){
     W=Math.max(1,host.clientWidth); H=Math.max(1,host.clientHeight);
     renderer.setSize(W,H,false); camera.aspect=W/H; camera.updateProjectionMatrix();
-    if(!homed){ homed=true; flyTo(homePose(),0); } req();
+    if(!homed){ homed=true; const h=homePose();
+      if(reduce.matches) flyTo(h,0);
+      else { const off=h.p.clone().sub(h.t); camera.position.copy(h.t.clone().add(new THREE.Vector3().setFromSphericalCoords(off.length()*1.9,.35,-.9))); controls.target.copy(h.t); controls.update(); flyTo(h,1700); } }
+    req();
   }
   new ResizeObserver(resize).observe(host);
+  let glowGain=1;
   function theme(){
     const cs=getComputedStyle(document.documentElement), c=(n)=>new THREE.Color(cs.getPropertyValue(n).trim()||"#888");
+    const dark=c("--bg").getHSL({}).l<.3;
     mats.id.color.copy(c("--land-id")); mats.nb.color.copy(c("--land")); mats.side.color.copy(c("--land-side"));
-    mats.coast.color.copy(c("--coast")); mats.grid.color.copy(c("--grid")); scene.fog.color.copy(c("--sea-deep")); req();
+    mats.coast.color.copy(c("--coast")); mats.grid.color.copy(c("--grid")); scene.fog.color.copy(c("--sea-deep"));
+    hemi.intensity=dark?1.1:1.6; sun.intensity=dark?2.1:2.6;
+    glowMat.blending=dark?THREE.AdditiveBlending:THREE.NormalBlending; glowMat.opacity=dark?.85:.45; glowMat.needsUpdate=true; glowGain=dark?1:1;
+    recolor(); req();
   }
   theme(); resize();
 
@@ -985,7 +1101,10 @@ function createMap(){
     const i=pick(e); if(i!==hoverId){ hoverId=i; recolor(); req(); cvs.style.cursor=i>=0?"pointer":""; }
     if(i<0) return hideTip();
     const c=cities[i], r=host.getBoundingClientRect();
-    tip.innerHTML=`<b>${R.esc(c.city)}</b><br>${c.n} lowongan · ${c.fresh} baru (≤ 24 jam)<br>${c.ver} terverifikasi · terbaru ${R.ago(c.newest)}<br><span class="sub">Klik untuk menyaring kota ini</span>`;
+    const list=(m)=>top(m,3).map(([k,n])=>`${R.esc(k)} <span class="sub">${n}</span>`).join(" · ");
+    tip.innerHTML=`<b>${R.esc(c.city)}</b> <span class="sub">${R.esc((R.CITIES[c.city]||[])[2]||"")}</span><br>${c.n} lowongan · ${c.fresh} baru (≤ 24 jam) · ${c.ver} terverifikasi`+
+      `<div class="tip-row"><span class="sub">Perusahaan</span> ${list(c.cos)}</div><div class="tip-row"><span class="sub">Bidang</span> ${list(c.roles)}</div>`+
+      `<span class="sub">Terbaru ${R.ago(c.newest)} · klik untuk menyaring</span>`;
     tip.style.display="block";
     const x=Math.min(e.clientX-r.left+14,W-tip.offsetWidth-8), y=Math.min(e.clientY-r.top+14,H-tip.offsetHeight-8);
     tip.style.transform=`translate(${Math.max(8,x)}px,${Math.max(8,y)}px)`;
