@@ -184,6 +184,6 @@ Portal tidak boleh menyebut lowongan "terverifikasi" tanpa bukti. Definisi:
 ## 14. Pertanyaan terbuka
 
 1. Daftar awal 30 perusahaan target (Tbk, tambang, FMCG, perbankan) dan kata kunci posisi.
-2. Hosting: cukup lokal, atau statis di GitHub Pages/Cloudflare Pages?
+2. ~~Hosting~~ Terjawab 25 Nov 2026: Cloudflare Workers static assets di https://job-radar.buitenzorg.dev (`npm run deploy`), `noindex`. Masih terbuka: perlukah Cloudflare Access (F-13) sebelum `jobs.json` nyata ikut terunggah?
 3. Channel Telegram dan email alert mana yang dipakai di Fase 2?
 4. Perlukah penelusuran tambahan ke kota kecil di luar gazetteer 44 kota saat ini?

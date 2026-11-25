@@ -1,0 +1,22 @@
+{
+  // Cloudflare Workers static assets, same setup as kampung-budaya.buitenzorg.dev.
+  // Deploy: `npm run deploy` (or automatically on push to main once Workers Builds is connected).
+  "name": "job-radar",
+  "compatibility_date": "2026-11-25",
+  "observability": {
+    "enabled": true
+  },
+  // Custom domain: Cloudflare creates the DNS record and the SSL certificate.
+  "routes": [
+    { "pattern": "job-radar.buitenzorg.dev", "custom_domain": true }
+  ],
+  // No *.workers.dev copy of the site.
+  "workers_dev": false,
+  // Copies only the served files (index.html, robots.txt, _headers, jobs.json if present) into dist/.
+  "build": {
+    "command": "node tools/build_site.mjs"
+  },
+  "assets": {
+    "directory": "dist"
+  }
+}

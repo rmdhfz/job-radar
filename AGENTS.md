@@ -33,7 +33,12 @@ npm install && npx playwright install chromium   # once
 npm run serve        # http://localhost:8080  (python http.server; jobs.json next to index.html is auto-loaded)
 npm run smoke        # must print SMOKE OK before you call anything done
 npm run build:land   # only if the basemap needs regenerating
+npm run deploy       # Cloudflare Workers static assets -> https://job-radar.buitenzorg.dev (needs `wrangler login`)
 ```
+
+Deploy uploads only `dist/`, which `tools/build_site.mjs` fills from an allowlist (`index.html`, `robots.txt`, `_headers`,
+`jobs.json` if present). Anything in `dist/` is public. Security headers and `noindex` live in `_headers`; the page CSP is
+in `index.html` and also allows Cloudflare Web Analytics, which the `buitenzorg.dev` zone injects.
 
 Opening `index.html` via `file://` works too (falls back to demo data; use the "Muat jobs.json" button).
 

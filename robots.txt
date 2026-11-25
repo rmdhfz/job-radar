@@ -1,0 +1,3 @@
+# Personal job radar (PRD section 3: not a public job search engine). Keep it out of search results.
+User-agent: *
+Disallow: /
